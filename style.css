@@ -1,0 +1,57 @@
+body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #040404; /* Fondo casi negro para el contraste */
+            font-family: 'Inter', sans-serif;
+            color: #ccc;
+            flex-direction: column;
+        }
+        canvas {
+            border: 1px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            position: relative; /* permite usar z-index */
+            z-index: 10;        /* canvas por encima */
+        }
+        .info-panel {
+            text-align: center;
+            padding: 10px 20px;
+            background: #1a1a1a;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            width: 512px; /* Ancho del canvas */
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .info-panel p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+        .info-panel span {
+            font-weight: bold;
+            color: #fff;
+        }
+        .text-panel {
+           
+            padding: 15px 30px;
+            border-radius: 8px;
+            width: 450px; /* corregido: sin espacio entre número y unidad */
+            max-width: 90vw;
+            text-align: center;
+            margin: auto;
+            position: relative; /* establece contexto de apilamiento */
+            z-index: 1;          /* por debajo del canvas */
+        }
+        
+        .text-panel p {
+            font-size: 0.85rem;
+            color: #b0b0b0;
+            line-height: 1.5;
+        }
+        #raices {
+            font-style: italic;
+        }
