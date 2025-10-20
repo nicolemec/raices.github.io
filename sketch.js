@@ -1,6 +1,4 @@
-/* ... (Bloque Conceptual y Poética) ... */
-
-// ESTADO GLOBAL – El Ideotipo en el Lienzo
+// Ideotipo
 let morfologias = [];
 let eje_OrigenX = 256;
 let eje_OrigenY = 256;
@@ -11,9 +9,7 @@ let hojas_Activadas = false;
 let hojas_Por_Elemento = 5;
 
 
-
 class ElementoVital {
-    // [Cuerpo de ElementoVital sin cambios]
     constructor(pos, angulo, ancho, tipo) {
         this.pos = pos;
         this.angulo = angulo;
@@ -61,41 +57,33 @@ class ElementoVital {
     }
 
    trazar() {
-        if (this.historial.length < 2) return; // Necesitamos al menos 2 puntos para un segmento
+        if (this.historial.length < 2) return; 
 
         noFill();
         strokeWeight(this.ancho);
 
-        // Define los parámetros de opacidad
-        let opacidad_Inicio = 200; // Opacidad máxima cerca del origen (puedes ajustar este valor)
-        let opacidad_Final = 10;   // Opacidad mínima al final del trazo
+        let opacidad_Inicio = 200; 
+        let opacidad_Final = 10;   
         
-        // La longitud total para calcular el degradado
-        // Usamos this.historial.length, ya que representa la "edad" o longitud actual de la rama.
         let longitud_Rama = this.historial.length;
 
-        // Iteramos a través del historial de puntos para dibujar segmentos con opacidad decreciente
+
         for (let i = 0; i < longitud_Rama - 1; i++) {
             let p1 = this.historial[i];
             let p2 = this.historial[i + 1];
 
-            // Calculamos la opacidad para este segmento
-            // Queremos que la opacidad vaya de opacidad_Inicio a opacidad_Final a medida que 'i' aumenta.
-            let opacidad_segmento = map(
+           let opacidad_segmento = map(
                 i, 
                 0, 
                 longitud_Rama - 1, 
                 opacidad_Inicio, 
                 opacidad_Final
             );
-
-            // Aseguramos que la opacidad esté dentro del rango válido
+        
             opacidad_segmento = constrain(opacidad_segmento, opacidad_Final, opacidad_Inicio);
             
-            // Aplicamos el color y opacidad al segmento
             stroke(255, 255, 255, opacidad_segmento);
-            
-            // Dibujamos el segmento
+
             line(p1.x, p1.y, p2.x, p2.y);
         }
     }
@@ -168,46 +156,27 @@ class Hoja {
 
 
 function activarCaidaDeHojas() {
-    console.log("Activando caída de hojas...");
-
-    // Filtramos los elementos para obtener solo las ramas "Experiencia" que no han terminado
-    // y que tienen suficientes puntos para ser consideradas una rama 'activa'.
-    let ramas_Activas = morfologias.filter(elemento => 
+        let ramas_Activas = morfologias.filter(elemento => 
         elemento.tipo === "Experiencia" && 
         !elemento.terminado && 
-        elemento.historial.length > 5 // Aseguramos que sea una rama con cierto tamaño
+        elemento.historial.length > 5 
     );
 
-    // Si no hay ramas activas (por ejemplo, al inicio o si todas las ramas terminaron y salieron del canvas)
+    
     if (ramas_Activas.length === 0) {
-        console.log("No hay ramas activas de donde desprender hojas.");
         return; // Salimos de la función si no hay ramas válidas.
     }
 
-    // Distribuimos el número total de hojas a generar entre las ramas activas
     let hojas_por_rama_activa = floor(hojas_Por_Elemento / ramas_Activas.length) || 1; // Mínimo 1 por rama
 
     for (let elemento of ramas_Activas) {
-        // Tomamos el último punto del historial (la "punta" de la rama)
         let posUltima = elemento.historial[elemento.historial.length - 1];
 
-        // Añadimos un pequeño desplazamiento hacia adentro o ajustamos la posición inicial
-        // Esto evita que salgan exactamente en el borde si la punta está en el límite
         let x_inicial = posUltima.x;
         let y_inicial = posUltima.y;
 
-        // Opcional: Si quieres que las hojas salgan un poco más "adentro" de la rama
-        // para asegurar que no estén fuera del canvas justo al nacer,
-        // puedes retroceder un poco la posición.
-        // Esto depende de cómo se ve el efecto con tus ramas.
-        // let direccion_rama_x = cos(elemento.angulo);
-        // let direccion_rama_y = sin(elemento.angulo);
-        // x_inicial -= direccion_rama_x * 5; // Retrocede 5 unidades en la dirección opuesta al crecimiento
-        // y_inicial -= direccion_rama_y * 5; 
-
 
         for (let i = 0; i < hojas_por_rama_activa; i++) {
-            // Generamos las hojas en la posición de la punta de la rama
             hojas.push(new Hoja(x_inicial, y_inicial));
         }
         
@@ -222,7 +191,14 @@ function activarCaidaDeHojas() {
     }
 }
 
-
+function reiniciarSistema() {
+    morfologias = [];
+    hojas = [];
+    ciclo_Activo = true;
+    hojas_Activadas = false;
+    background(4); 
+    setup(); 
+}
 
 function setup() {
     createCanvas(512, 512);
@@ -302,7 +278,7 @@ function draw() {
 
     if (morfologias.length > 50 && porcentajeTerminado > umbral_Madurez) {
         if (!hojas_Activadas) {
-            activarCaidaDeHojas(); // <-- ¡Ahora esta llamada funciona!
+            activarCaidaDeHojas(); 
             hojas_Activadas = true;
         }
 
@@ -312,20 +288,12 @@ function draw() {
     }
 }
 
-function mouseClicked() {
-    // 1. Verificamos que el crecimiento principal haya terminado.
-    // La variable 'hojas_Activadas' ya no es necesaria en la condición de entrada.
-    if (!ciclo_Activo) { 
-        
-        // 2. Limpiamos el array de hojas.
+function mouseClicked() {     
         hojas = [];
-
-        // 3. Activamos la caída de hojas nuevamente.
         activarCaidaDeHojas();
-        
-
-        hojas_Activadas = false;
-
-        console.log("¡Click detectado! Nueva oleada de hojas cayendo.");
+}
+function keyPressed() {
+    if (key === ' ') { // La barra espaciadora genera un espacio ' '
+        reiniciarSistema();
     }
 }
