@@ -106,7 +106,6 @@ class ElementoVital {
     }
 }
 
-
 class Hoja {
     // [Cuerpo de Hoja sin cambios]
     constructor(x, y) {
@@ -153,15 +152,12 @@ class Hoja {
     }
 }
 
-
-
 function activarCaidaDeHojas() {
         let ramas_Activas = morfologias.filter(elemento => 
         elemento.tipo === "Experiencia" && 
         !elemento.terminado && 
         elemento.historial.length > 5 
     );
-
     
     if (ramas_Activas.length === 0) {
         return; // Salimos de la función si no hay ramas válidas.
@@ -178,8 +174,7 @@ function activarCaidaDeHojas() {
 
         for (let i = 0; i < hojas_por_rama_activa; i++) {
             hojas.push(new Hoja(x_inicial, y_inicial));
-        }
-        
+        }    
     }
     
     let totalHojasGeneradas = hojas.length;
@@ -203,7 +198,7 @@ function reiniciarSistema() {
 function setup() {
     createCanvas(512, 512);
     background(4);
-    frameRate(24);
+    frameRate(32);
 
     let semillas_Iniciales = floor(random(6, 16));
 
@@ -239,7 +234,6 @@ function draw() {
     let nuevos_Elementos = [];
     let elementos_Activos = 0;
 
-    // 2. DESARROLLO MORFOLÓGICO (Expandir y Bifurcar)
     for (let i = morfologias.length - 1; i >= 0; i--) {
         let elemento = morfologias[i];
 
@@ -259,12 +253,10 @@ function draw() {
     }
     morfologias = morfologias.concat(nuevos_Elementos);
 
-    // 3. TRAZADO DEL ÁRBOL
     for (let elemento of morfologias) {
         elemento.trazar();
     }
 
-    // 4. PARTÍCULAS DE HOJAS
     for (let i = hojas.length - 1; i >= 0; i--) {
         let hoja = hojas[i];
         hoja.actualizar();
@@ -272,7 +264,6 @@ function draw() {
         if (hoja.estaMuerta()) hojas.splice(i, 1);
     }
 
-    // 5. CESE DEL CRECIMIENTO y ACTIVACIÓN DE HOJAS
     let porcentajeTerminado = (morfologias.length - elementos_Activos) / morfologias.length;
     let umbral_Madurez = 0.75;
 
@@ -293,7 +284,7 @@ function mouseClicked() {
         activarCaidaDeHojas();
 }
 function keyPressed() {
-    if (key === ' ') { // La barra espaciadora genera un espacio ' '
+    if (key === ' ') { 
         reiniciarSistema();
     }
 }
